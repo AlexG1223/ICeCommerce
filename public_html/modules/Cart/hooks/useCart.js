@@ -37,74 +37,78 @@ export function useCart() {
         EventBus.events['CART_ADD'] = [];
         EventBus.on('CART_ADD', (product) => {
             addToCart(product);
-            openCart();
+   
         });
     }
 
+    function updateCartBadge() {
+        let count = 0;
+        cart.forEach(item => {
+            count += item.quantity;
+        });
+        cartCount.textContent = count;
+    }
+
     function addToCart(product) {
-        const existing = cart.find(item => item.id === product.id);
+        const existing = cart.find(item => String(item.id) === String(product.id));
         if (existing) {
             existing.quantity += 1;
         } else {
             cart.push({ ...product, quantity: 1 });
         }
         saveCart();
-        renderCart();
+        updateCartBadge(); // Actualiza el contador sin abrir ni re-renderizar todo el carrito
     }
 
     function updateQuantity(id, delta) {
-        const item = cart.find(item => item.id === id);
+        const item = cart.find(item => String(item.id) === String(id));
         if (item) {
             item.quantity += delta;
             if (item.quantity <= 0) {
-                cart = cart.filter(i => i.id !== id);
+                cart = cart.filter(i => String(i.id) !== String(id));
             }
             saveCart();
+            updateCartBadge();
             renderCart();
         }
     }
 
-function removeCartItem(id) {
-    console.log("ID a eliminar:", id);
-
-    cart = cart.filter(item => item.id !== Number(id));
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    console.log("Carrito actualizado:", cart);
-    console.log("LocalStorage:", JSON.parse(localStorage.getItem("cart")));
-
-    renderCart();
-}
+    function removeCartItem(id) {
+        cart = cart.filter(item => String(item.id) !== String(id));
+        saveCart();
+        updateCartBadge();
+        renderCart();
+    }
 
     function saveCart() {
         localStorage.setItem('carnelli_cart', JSON.stringify(cart));
     }
 
-    // UI Rendering
     function renderCart() {
         let total = 0;
         let count = 0;
+
         cartItemsContainer.innerHTML = '';
 
-        if (cart.length === 0) {
+        if (cart.length === 0) {    
             cartItemsContainer.innerHTML = '<div class="cart-empty">Tu carrito está vacío</div>';
             btnCheckout.disabled = true;
         } else {
             btnCheckout.disabled = false;
             let itemsHTML = '';
+
             cart.forEach(item => {
                 total += item.price * item.quantity;
                 count += item.quantity;
                 itemsHTML += CartItemHTML(item);
             });
+
             cartItemsContainer.innerHTML = itemsHTML;
         }
 
         cartTotalAmount.textContent = formatCurrency(total);
         cartCount.textContent = count;
 
-        // Attach listeners to newly rendered items
         cartItemsContainer.querySelectorAll('.quantity-ctrl button').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
@@ -119,10 +123,10 @@ function removeCartItem(id) {
             });
         });
     }
-
     function openCart() {
         cartDrawer.classList.add('open');
         cartOverlay.classList.add('show');
+        renderCart();
     }
     
     function closeCart() {
