@@ -11,6 +11,7 @@ export function useCatalog(container) {
     const productGrid = document.getElementById('product-grid');
     const categoryFilter = document.getElementById('category-filter');
     const searchInput = document.getElementById('search-input');
+    const datalist = document.getElementById('products-datalist');
 
     if (!productGrid) return;
 
@@ -27,6 +28,16 @@ export function useCatalog(container) {
             debounceTimer = setTimeout(loadProducts, 500);
         });
     }
+
+   function updateDatalist(products, datalist) { 
+    if (!datalist) return;
+    datalist.innerHTML = '';
+    products.forEach(product => {
+        const option = document.createElement('option');
+        option.value = product.name;
+        datalist.appendChild(option);
+    });
+}
 
     async function loadCategories() {
         const response = await CatalogService.getCategories();
@@ -48,7 +59,8 @@ export function useCatalog(container) {
         productGrid.innerHTML = '';
         
         if (response.success && response.data.length > 0) {
-            // Render all cards as string then attach events
+        updateDatalist(response.data, datalist);
+
             let cardsHTML = '';
             response.data.forEach(product => {
                 cardsHTML += ProductCardHTML(product);
@@ -65,7 +77,9 @@ export function useCatalog(container) {
                         id: el.dataset.id,
                         price: parseFloat(el.dataset.price),
                         name: el.dataset.name,
-                        image: el.dataset.img
+                        image: el.dataset.img,
+                        min_quantity: parseInt(el.dataset.minQuantity) || 200,
+        quantity: parseInt(el.dataset.minQuantity) || 200
                     };
                     EventBus.emit('CART_ADD', product);
                 });

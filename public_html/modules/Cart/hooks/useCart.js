@@ -6,10 +6,8 @@ export function useCart() {
     const cartRoot = document.getElementById('cart-root');
     if (!cartRoot) return;
     
-    // Inject HTML
     cartRoot.innerHTML = CartDrawerHTML;
 
-    // DOM Elements
     const cartToggle = document.getElementById('cart-toggle');
     const cartClose = document.getElementById('cart-close');
     const cartDrawer = document.getElementById('cart-drawer');
@@ -23,7 +21,6 @@ export function useCart() {
     const btnCancelCheckout = document.getElementById('btn-cancel-checkout');
     const checkoutForm = document.getElementById('checkout-form');
 
-    // State
     let cart = [];
 
     function initCart() {
@@ -33,11 +30,10 @@ export function useCart() {
         }
         renderCart();
 
-        // Prevent attaching multiple EventBus listeners by clearing previous ones (if using SPA re-renders, not needed since useCart is global once)
         EventBus.events['CART_ADD'] = [];
         EventBus.on('CART_ADD', (product) => {
             addToCart(product);
-   
+           
         });
     }
 
@@ -51,33 +47,49 @@ export function useCart() {
 
     function addToCart(product) {
         const existing = cart.find(item => String(item.id) === String(product.id));
+        const minQty = parseInt(product.min_quantity) || 1;
+
         if (existing) {
             existing.quantity += 1;
         } else {
-            cart.push({ ...product, quantity: 1 });
+           
+            cart.push({ 
+                ...product, 
+                quantity: minQty,
+                min_quantity: minQty 
+            });
         }
         saveCart();
-        updateCartBadge(); // Actualiza el contador sin abrir ni re-renderizar todo el carrito
+        renderCart(); 
+        updateCartBadge();
     }
+
 
     function updateQuantity(id, delta) {
         const item = cart.find(item => String(item.id) === String(id));
         if (item) {
-            item.quantity += delta;
-            if (item.quantity <= 0) {
-                cart = cart.filter(i => String(i.id) !== String(id));
+            const newQuantity = item.quantity + delta;
+            const minAllowed = parseInt(item.min_quantity) || 1;
+
+            if (delta < 0 && item.quantity <= minAllowed) {
+                if(confirm("¿Deseas eliminar este producto del carrito?")) {
+                    removeCartItem(id);
+                }
+                return;
             }
+
+            item.quantity = newQuantity;
             saveCart();
-            updateCartBadge();
             renderCart();
+            updateCartBadge();
         }
     }
 
     function removeCartItem(id) {
         cart = cart.filter(item => String(item.id) !== String(id));
         saveCart();
-        updateCartBadge();
         renderCart();
+        updateCartBadge();
     }
 
     function saveCart() {
@@ -117,12 +129,32 @@ export function useCart() {
             });
         });
 
+        cartItemsContainer.querySelectorAll('.quantity-ctrl input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const id = e.target.dataset.id;
+                const val = parseInt(e.target.value);
+                const item = cart.find(i => String(i.id) === String(id));
+                const min = item ? (parseInt(item.min_quantity) || 1) : 1;
+
+                if (isNaN(val) || val < min) {
+                    e.target.value = min;
+                    if(item) item.quantity = min;
+                } else {
+                    if(item) item.quantity = val;
+                }
+                saveCart();
+                renderCart();
+                updateCartBadge();
+            });
+        });
+
         cartItemsContainer.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 removeCartItem(e.target.dataset.id);
             });
         });
     }
+
     function openCart() {
         cartDrawer.classList.add('open');
         cartOverlay.classList.add('show');
@@ -152,27 +184,30 @@ export function useCart() {
         const formData = new FormData(checkoutForm);
         const customerData = Object.fromEntries(formData.entries());
         
-        btnCheckout.disabled = true;
         const submitBtn = checkoutForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
         submitBtn.textContent = 'Procesando...';
         submitBtn.disabled = true;
 
         const response = await CartService.processCheckout(customerData, cart);
         
-        submitBtn.textContent = 'Confirmar Pedido';
+        submitBtn.textContent = originalText;
         submitBtn.disabled = false;
 
         if (response.success) {
             cart = [];
             saveCart();
             renderCart();
+            updateCartBadge();
             checkoutModal.classList.remove('show');
             checkoutForm.reset();
             
-            if (customerData.payment_method === 'mercadopago' && response.preference_id) {
-                alert(`Pedido #${response.order_id} creado correctamente. Redirigiendo a Mercado Pago...`);
+            if (customerData.payment_method === 'mercadopago' && response.preference_url) {
+                alert(`Pedido #${response.order_id} creado. Redirigiendo a Mercado Pago...`);
+                window.location.href = response.preference_url;
             } else {
-                alert(`Pedido #${response.order_id} creado correctamente. Nos contactaremos con usted para el pago manual.`);
+                alert(`Pedido creado con éxito. Pronto recibirás los datos para la transferencia.`);
             }
         } else {
             alert('Error: ' + response.message);

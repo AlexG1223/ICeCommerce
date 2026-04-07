@@ -21,7 +21,9 @@ export async function useProductDetail(container, productId) {
                     id: product.id,
                     price: parseFloat(product.price),
                     name: product.name,
-                    image: product.image
+                    image: product.image,
+                    min_quantity: product.min_quantity,
+                    quantity: product.min_quantity
                 });
             });
 

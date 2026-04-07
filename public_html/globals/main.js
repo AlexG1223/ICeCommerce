@@ -9,7 +9,7 @@ function formatCurrency(amount) {
     return new Intl.NumberFormat('es-UY', {
         style: 'currency',
         currency: 'UYU',
-        minimumFractionDigits: 2
+        minimumFractionDigits: 0
     }).format(amount);
 }
 

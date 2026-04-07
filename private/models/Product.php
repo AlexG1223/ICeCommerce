@@ -12,6 +12,8 @@ class Product {
     public $price;
     public $stock;
     public $image;
+
+    public $min_quantity;
     public $is_active;
 
     public function __construct($db) {
@@ -68,6 +70,7 @@ class Product {
             $this->description = $row['description'];
             $this->image = $row['image'];
             $this->stock = $row['stock'];
+            $this->min_quantity = $row['min_quantity'];
             return $row;
         }
         return false;

@@ -7,7 +7,10 @@ export const ProductListHTML = `
             <select id="category-filter" class="filter-select">
                 <option value="">Todas las categorías</option>
             </select>
-            <input type="text" id="search-input" class="filter-input" placeholder="Buscar productos...">
+        <input type="text" id="search-input" class="filter-input" 
+                   placeholder="Buscar productos..." 
+                   list="products-datalist" 
+                   autocomplete="off"> <datalist id="products-datalist"></datalist>
         </div>
     </div>
 

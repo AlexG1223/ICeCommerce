@@ -16,7 +16,7 @@ export const CartDrawerHTML = `
     <div class="cart-footer">
         <div class="cart-total">
             <span>Total:</span>
-            <span id="cart-total-amount">$0.00</span>
+            <span id="cart-total-amount">$0</span>
         </div>
         <button id="btn-checkout" class="btn-primary" style="width: 100%;" disabled>Ir a Pagar</button>
     </div>
@@ -64,6 +64,9 @@ export const CartDrawerHTML = `
 `;
 
 export function CartItemHTML(item) {
+    const minQty = item.min_quantity || 1;
+    const currentQty = item.quantity || minQty; // Aseguramos que use la cantidad actual
+
     return `
     <div class="cart-item">
         <img src="${item.image}" alt="${item.name}" class="cart-item-img">
@@ -72,9 +75,14 @@ export function CartItemHTML(item) {
             <div style="font-weight:700; color:var(--brand-red);">${formatCurrency(item.price)}</div>
             <div class="cart-item-controls">
                 <div class="quantity-ctrl">
-                    <button data-id="${item.id}" data-action="minus">-</button>
-                    <span>${item.quantity}</span>
-                    <button data-id="${item.id}" data-action="plus">+</button>
+                    <button data-id="${item.id}" data-action="minus" class="btn-qty">-</button>
+                    <input type="number" 
+                           id="qty-input-${item.id}" 
+                           min="${minQty}" 
+                           value="${currentQty}" 
+                           data-id="${item.id}" 
+                           data-action="update">
+                    <button data-id="${item.id}" data-action="plus" class="btn-qty">+</button>
                 </div>
                 <button class="cart-item-remove" data-id="${item.id}">Eliminar</button>
             </div>

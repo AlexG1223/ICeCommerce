@@ -17,7 +17,15 @@ export function ProductCardHTML(product) {
                 <span class="product-price">${priceStr}</span>
                 <div class="product-actions">
                     <button class="btn-outline btn-personalize" data-id="${product.id}" data-name="${product.name}">Personalizar</button>
-                    <button class="btn-primary btn-add-cart" data-id="${product.id}" data-price="${product.price}" data-name="${product.name}" data-img="${product.image}">Añadir</button>
+                   <button 
+    class="btn-primary btn-add-cart" 
+    data-id="${product.id}" 
+    data-price="${product.price}" 
+    data-name="${product.name}" 
+    data-img="${product.image}"
+    data-min-quantity="${product.min_quantity}" 
+    data-quantity="${product.min_quantity}"
+>Añadir</button>
                 </div>
             </div>
         </div>
