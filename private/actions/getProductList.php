@@ -1,9 +1,7 @@
 <?php
-// api/getProducts.php
-header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 
-require_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -25,7 +23,7 @@ try {
 
     $stmt = $db->prepare($query);
     $stmt->execute();
-    
+
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
@@ -35,7 +33,7 @@ try {
 
 } catch (PDOException $e) {
     echo json_encode([
-        "success" => false, 
+        "success" => false,
         "message" => "Error en la consulta: " . $e->getMessage()
     ]);
 }
