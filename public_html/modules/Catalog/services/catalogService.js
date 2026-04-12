@@ -7,7 +7,9 @@ export const CatalogService = {
             if (search) url += `&search=${encodeURIComponent(search)}`;
             
             const response = await fetch(url);
-            return await response.json();
+            const data = await response.json();
+            console.log("Fetch Products Data Received:", data);
+            return data;
         } catch (error) {
             console.error('Error fetching products:', error);
             return { success: false, data: [] };
@@ -17,7 +19,9 @@ export const CatalogService = {
     async getCategories() {
         try {
             const response = await fetch(`${CONFIG.API_URL}/products.php?action=categories`);
-            return await response.json();
+            const data = await response.json();
+            console.log("Fetch Categories Data Received:", data);
+            return data;
         } catch (error) {
             console.error('Error fetching categories:', error);
             return { success: false, data: [] };

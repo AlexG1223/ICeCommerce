@@ -81,3 +81,25 @@
 .back-link:hover {
     color: var(--brand-red);
 }
+
+.detail-thumbnails {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    overflow-x: auto;
+    background: var(--surface-color);
+}
+
+.detail-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color var(--transition-fast);
+}
+
+.detail-thumb:hover {
+    border-color: var(--brand-red);
+}

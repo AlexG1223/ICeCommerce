@@ -2,17 +2,22 @@
 export const CartService = {
     async processCheckout(customerData, cartItems) {
         try {
+            const requestData = {
+                customer: customerData,
+                cart: cartItems
+            };
+            console.log("Checkout Data Sent:", requestData);
+            
             const response = await fetch(`${CONFIG.API_URL}/checkout.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    customer: customerData,
-                    cart: cartItems
-                })
+                body: JSON.stringify(requestData)
             });
-            return await response.json();
+            const data = await response.json();
+            console.log("Checkout Data Received:", data);
+            return data;
         } catch (error) {
             console.error('Error during checkout:', error);
             return { success: false, message: 'Error de red o de servidor.' };

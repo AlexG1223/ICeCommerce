@@ -76,12 +76,7 @@ export function CartItemHTML(item) {
             <div class="cart-item-controls">
                 <div class="quantity-ctrl">
                     <button data-id="${item.id}" data-action="minus" class="btn-qty">-</button>
-                    <input type="number" 
-                           id="qty-input-${item.id}" 
-                           min="${minQty}" 
-                           value="${currentQty}" 
-                           data-id="${item.id}" 
-                           data-action="update">
+                    <span id="qty-label-${item.id}" class="qty-label" style="padding: 0 10px; font-weight: bold;">${currentQty}</span>
                     <button data-id="${item.id}" data-action="plus" class="btn-qty">+</button>
                 </div>
                 <button class="cart-item-remove" data-id="${item.id}">Eliminar</button>

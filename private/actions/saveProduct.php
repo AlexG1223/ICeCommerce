@@ -82,7 +82,7 @@ function procesarImagenes($db, $id_producto, $fotos)
     foreach ($fotos['tmp_name'] as $indice => $tmp_name) {
         $nombre_archivo = time() . "_" . $fotos['name'][$indice];
         $ruta_final = $directorio . $nombre_archivo;
-        $url_db = "img/products/" . $nombre_archivo;
+        $url_db = "assets/img/products/" . $nombre_archivo;
 
         if (move_uploaded_file($tmp_name, $ruta_final)) {
             // La primera imagen (índice 0) será la principal (is_primary = 1)
