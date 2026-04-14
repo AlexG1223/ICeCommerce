@@ -33,23 +33,20 @@ class CheckoutController
         $customerData['payment_method'] = 'mercadopago'; // Enforce MP
 
         if (!$this->order->checkStockBeforeCheckout($cartItems)) {
-            return ['success' => false, 'message' => 'Stock insuficiente para procesar la orden. Verificá tu carrito.'];
+            return ['success' => false, 'message' => 'Parece que no queda stock disponible'];
         }
 
-        // Save order FIRST
         $orderId = $this->order->create($customerData, $cartItems);
         if (!$orderId) {
             return ['success' => false, 'message' => 'Error al crear la orden en base de datos.'];
         }
-
-        // Logic for MP preference
         try {
             if (class_exists('\MercadoPago\MercadoPagoConfig')) {
                 \MercadoPago\MercadoPagoConfig::setAccessToken($this->mp_access_token);
-                
+
                 $client = new \MercadoPago\Client\Preference\PreferenceClient();
                 $items = [];
-                
+
                 foreach ($cartItems as $cartItem) {
                     $items[] = [
                         "title" => $cartItem['name'],

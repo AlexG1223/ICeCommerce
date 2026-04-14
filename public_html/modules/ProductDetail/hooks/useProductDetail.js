@@ -17,32 +17,44 @@ export async function useProductDetail(container, productId) {
             const thumbnails = container.querySelectorAll('.detail-thumb');
             const mainImg = document.getElementById('main-product-image');
             
-            thumbnails.forEach(thumb => {
-                thumb.addEventListener('click', (e) => {
-                    mainImg.src = e.target.dataset.url;
-                });
-            });
+if (mainImg && thumbnails.length > 0) {
+    thumbnails.forEach(thumb => {
+        thumb.addEventListener('click', (e) => {
+            const newSrc = e.target.dataset.url;
+            if (newSrc) {
+                mainImg.src = newSrc;
+            }
+        });
+    });
+} else {
+    console.warn("No se encontraron miniaturas o la imagen principal en el DOM.");
+}
 
             // Bind events
             const btnAdd = document.getElementById('btn-detail-add');
             const btnPersonalize = document.getElementById('btn-detail-personalize');
 
-            btnAdd.addEventListener('click', () => {
-                EventBus.emit('CART_ADD', {
-                    id: product.id,
-                    price: parseFloat(product.price),
-                    name: product.name,
-                    image: product.image,
-                    min_quantity: product.min_quantity,
-                    quantity: product.min_quantity
+            if (btnAdd) {
+                btnAdd.addEventListener('click', () => {
+                    if (btnAdd.hasAttribute('disabled')) return;
+                    EventBus.emit('CART_ADD', {
+                        id: product.id,
+                        price: parseFloat(product.price),
+                        name: product.name,
+                        image: product.image,
+                        min_quantity: product.min_quantity,
+                        quantity: product.min_quantity
+                    });
                 });
-            });
+            }
 
-            btnPersonalize.addEventListener('click', () => {
-                const message = `Hola! Me gustaría consultar por la personalización de: ${product.name}`;
-                const wpUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-                window.open(wpUrl, '_blank');
-            });
+            if (btnPersonalize) {
+                btnPersonalize.addEventListener('click', () => {
+                    const message = `Hola! Me gustaría consultar por la personalización de: ${product.name}`;
+                    const wpUrl = `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+                    window.open(wpUrl, '_blank');
+                });
+            }
 
         } else {
             container.innerHTML = `

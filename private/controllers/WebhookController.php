@@ -36,11 +36,14 @@ class WebhookController {
                         $order_id = $payment->external_reference;
                         
                         if ($order_id) {
+                            $orderData = $this->order->getOrderById($order_id);
+                            $previousStatus = $orderData ? $orderData['payment_status'] : null;
+
                             $this->order->updatePaymentStatusByOrderId($order_id, $status);
                             
-                            if ($status === 'approved') {
+                            if ($status === 'approved' && $previousStatus === 'pending') {
                                 $this->sendEmailNotification($order_id);
-                            } else if (in_array($status, ['rejected', 'cancelled', 'refunded'])) {
+                            } else if (in_array($status, ['rejected', 'cancelled', 'refunded']) && !in_array($previousStatus, ['rejected', 'cancelled', 'refunded', 'completed'])) {
                                 $this->order->restoreStockByOrderId($order_id);
                             }
                         }
@@ -60,6 +63,9 @@ class WebhookController {
         $orderInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$orderInfo) return false;
+
+        // --- Fetch API Creamos OT en programa de Gestión ---
+        $this->createOTInManagementProgram($order_id, $orderInfo);
 
         $mail = new PHPMailer(true);
         try {
@@ -92,6 +98,28 @@ class WebhookController {
         } catch (Exception $e) {
             // log error
         }
+    }
+
+    private function createOTInManagementProgram($order_id, $orderInfo) {
+        $api_url = 'https://api.tuprogramadegestion.com/ots';
+        $data = [
+            'order_id' => $order_id,
+            'customer' => $orderInfo['customer_name'],
+            'total'    => $orderInfo['total'],
+            'notes'    => $orderInfo['notes']
+        ];
+
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($data)
+            ]
+        ];
+        $context  = stream_context_create($options);
+        try {
+            @file_get_contents($api_url, false, $context);
+        } catch (Exception $e) { }
     }
 }
 ?>

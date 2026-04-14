@@ -22,6 +22,23 @@ if ($orderId && $status === 'approved') {
         $orderItems = $orderModel->getOrderDetailsById($orderId);
         $mailer = new MailerService();
         $mailer->sendPurchaseNotification($orderData, $orderItems, 'agcarnelli2023@gmail.com');
+        
+        // --- Fetch API Creamos OT en programa de Gestión ---
+        $apiUrl = 'https://api.tuprogramadegestion.com/ots';
+        $otData = [
+            'order_id' => $orderId,
+            'customer' => $orderData['customer_name'],
+            'total'    => $orderData['total']
+        ];
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/json\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($otData)
+            ]
+        ];
+        $context = stream_context_create($options);
+        @file_get_contents($apiUrl, false, $context);
     }
 }
 ?>

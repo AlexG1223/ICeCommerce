@@ -67,12 +67,12 @@ export function useCatalog(container) {
             });
             productGrid.innerHTML = cardsHTML;
 
-            // Attach events to the new buttons
             productGrid.querySelectorAll('.btn-add-cart').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     // Prevent navigation
                     e.stopPropagation();
-                    const el = e.target;
+                    const el = e.currentTarget;
+                    if (el.hasAttribute('disabled')) return;
                     const product = {
                         id: el.dataset.id,
                         price: parseFloat(el.dataset.price),

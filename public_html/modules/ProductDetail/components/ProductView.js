@@ -3,6 +3,10 @@
 export function ProductViewHTML(product) {
     const priceStr = formatCurrency(product.price);
     
+    const stock = parseInt(product.stock) || 0;
+    const minQty = parseInt(product.min_quantity) || 1;
+    const isAgotado = stock < minQty;
+    
     let thumbnailsHTML = '';
     if (product.images && product.images.length > 0) {
         thumbnailsHTML = `
@@ -22,8 +26,9 @@ export function ProductViewHTML(product) {
             Volver al Catálogo
         </a>
         <div class="product-detail-view">
-            <div class="detail-image-box">
+            <div class="detail-image-box" style="position: relative;">
                 <img src="${product.image}" id="main-product-image" alt="${product.name}">
+                ${isAgotado ? '<div style="position: absolute; top: 15px; right: 15px; background: red; color: white; padding: 6px 12px; border-radius: 4px; font-weight: bold; font-size: 1rem;">Agotado</div>' : ''}
                 ${thumbnailsHTML}
             </div>
             
@@ -33,9 +38,8 @@ export function ProductViewHTML(product) {
                 <div class="detail-price">${priceStr}</div>
                 <p class="detail-description">${product.description}</p>
                 
-                <div class="detail-actions">
-                    <button class="btn-outline" id="btn-detail-personalize">Personalizar por WhatsApp</button>
-                    <button class="btn-primary" id="btn-detail-add">Añadir al Carrito</button>
+                <div class="detail-actions" style="min-height: 50px;">
+                    ${!isAgotado ? `<button class="btn-primary" id="btn-detail-add">Añadir al Carrito</button>` : ''}
                 </div>
             </div>
         </div>
