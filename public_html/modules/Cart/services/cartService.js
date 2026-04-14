@@ -1,6 +1,8 @@
 // public_html/modules/Cart/services/cartService.js
+
 export const CartService = {
     async processCheckout(customerData, cartItems) {
+   
         try {
             const requestData = {
                 customer: customerData,
@@ -8,7 +10,7 @@ export const CartService = {
             };
             console.log("Checkout Data Sent:", requestData);
             
-            const response = await fetch(`${CONFIG.API_URL}/checkout.php`, {
+            const response = await fetch(`/eCommerce/public_html/api/checkout.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

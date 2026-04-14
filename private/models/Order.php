@@ -162,5 +162,21 @@ class Order {
         $stmt_check->bindParam(':id', $product_id);
         $stmt_check->execute();
     }
+
+    public function getOrderById($order_id) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$order_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrderDetailsById($order_id) {
+        $query = "SELECT od.*, p.name FROM " . $this->details_table . " od
+                  JOIN products p ON od.product_id = p.id
+                  WHERE od.order_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$order_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>
