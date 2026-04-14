@@ -10,7 +10,7 @@ export const CartService = {
             };
             console.log("Checkout Data Sent:", requestData);
             
-            const response = await fetch(`/eCommerce/public_html/api/checkout.php`, {
+            const response = await fetch(`/public/tienda/api/checkout.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

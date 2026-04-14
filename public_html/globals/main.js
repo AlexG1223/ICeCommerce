@@ -1,7 +1,16 @@
-// public_html/globals/main.js
+const getBaseUrl = () => {
+    const isLocal = window.location.hostname === 'localhost';
+    // Si estás en producción usa la ruta de la tienda, si no, la de localhost
+    return isLocal 
+        ? '/eCommerce/public_html/api' 
+        : '/public/tienda/api'; 
+};
+
 const CONFIG = {
-    WHATSAPP_NUMBER: '59899123456', // Reemplazar con el número real
-    API_URL: '/eCommerce/public_html/api'
+    WHATSAPP_NUMBER: '59899123456', 
+    API_URL: getBaseUrl(),
+    CURRENCY: 'UYU',
+    LOCALE: 'es-UY'
 };
 
 // Utilities for currency formatting

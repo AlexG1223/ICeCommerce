@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Compra - Impresos Carnelli</title>
-    <link rel="stylesheet" href="https://impresoscarnelli.com/tienda/public_html/globals/main.css">
-    <link rel="stylesheet" href="https://impresoscarnelli.com/tienda/public_html/styles/checkout.css">
-    <link rel="stylesheet" href="https://impresoscarnelli.com/tienda/public_html/modules/Cart/styles/cart.css">
+    <link rel="stylesheet" href="/public/tienda/globals/main.css">
+    <link rel="stylesheet" href="/public/tienda/styles/checkout.css">
+    <link rel="stylesheet" href="/public/tienda/modules/Cart/styles/cart.css">
 
 </head>
 
