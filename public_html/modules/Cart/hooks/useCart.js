@@ -50,7 +50,7 @@ export function useCart() {
         const minQty = parseInt(product.min_quantity) || 1;
 
         if (existing) {
-            existing.quantity += 1;
+            existing.quantity += minQty;
         } else {
            
             cart.push({ 
@@ -125,26 +125,9 @@ export function useCart() {
             btn.addEventListener('click', (e) => {
                 const id = e.target.dataset.id;
                 const action = e.target.dataset.action;
-                updateQuantity(id, action === 'plus' ? 1 : -1);
-            });
-        });
-
-        cartItemsContainer.querySelectorAll('.quantity-ctrl input').forEach(input => {
-            input.addEventListener('change', (e) => {
-                const id = e.target.dataset.id;
-                const val = parseInt(e.target.value);
                 const item = cart.find(i => String(i.id) === String(id));
-                const min = item ? (parseInt(item.min_quantity) || 1) : 1;
-
-                if (isNaN(val) || val < min) {
-                    e.target.value = min;
-                    if(item) item.quantity = min;
-                } else {
-                    if(item) item.quantity = val;
-                }
-                saveCart();
-                renderCart();
-                updateCartBadge();
+                const minQty = item ? (parseInt(item.min_quantity) || 1) : 1;
+                updateQuantity(id, action === 'plus' ? minQty : -minQty);
             });
         });
 
@@ -172,46 +155,7 @@ export function useCart() {
 
     btnCheckout.addEventListener('click', () => {
         closeCart();
-        checkoutModal.classList.add('show');
-    });
-
-    btnCancelCheckout.addEventListener('click', () => {
-        checkoutModal.classList.remove('show');
-    });
-
-    checkoutForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(checkoutForm);
-        const customerData = Object.fromEntries(formData.entries());
-        
-        const submitBtn = checkoutForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        
-        submitBtn.textContent = 'Procesando...';
-        submitBtn.disabled = true;
-
-        const response = await CartService.processCheckout(customerData, cart);
-        
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-
-        if (response.success) {
-            cart = [];
-            saveCart();
-            renderCart();
-            updateCartBadge();
-            checkoutModal.classList.remove('show');
-            checkoutForm.reset();
-            
-            if (customerData.payment_method === 'mercadopago' && response.preference_url) {
-                alert(`Pedido #${response.order_id} creado. Redirigiendo a Mercado Pago...`);
-                window.location.href = response.preference_url;
-            } else {
-                alert(`Pedido creado con éxito. Pronto recibirás los datos para la transferencia.`);
-            }
-        } else {
-            alert('Error: ' + response.message);
-        }
+        window.location.href = 'checkout.php';
     });
 
     initCart();

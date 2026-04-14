@@ -1,0 +1,170 @@
+/* public_html/assets/css/checkout.css */
+
+/* 1. Contenedor Principal */
+.checkout-page {
+    max-width: 900px;
+    margin: var(--spacing-xl) auto;
+    padding: var(--spacing-lg);
+    background: var(--surface-color);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* 2. Cabecera y Navegación */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--brand-gray);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.btn-back:hover {
+    color: var(--brand-red);
+}
+
+.checkout-page h1 {
+    font-size: 2rem;
+    color: var(--brand-black);
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 2px solid var(--brand-light-gray);
+    padding-bottom: var(--spacing-sm);
+}
+
+/* 3. Resumen del Pedido */
+.checkout-summary {
+    background: #fdfdfd;
+    padding: var(--spacing-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.checkout-summary h3 {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+    color: var(--brand-dark-gray);
+}
+
+#checkout-items div {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px dashed var(--brand-light-gray);
+    color: var(--brand-dark-gray);
+}
+
+.checkout-summary h4 {
+    margin-top: var(--spacing-md);
+    text-align: right;
+    font-size: 1.4rem;
+    color: var(--brand-black);
+}
+
+#checkout-total {
+    color: var(--brand-red);
+    font-weight: 800;
+}
+
+/* 4. Formulario de Checkout */
+#checkout-page-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Dos columnas por defecto */
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Campos que ocupan todo el ancho (Dirección y Notas) */
+.form-group:nth-child(5),
+.form-group:nth-child(6),
+.btn-pay {
+    grid-column: span 2;
+}
+
+.form-group label {
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--brand-dark-gray);
+    display: block;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    background-color: var(--brand-white);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--brand-red);
+    box-shadow: 0 0 0 3px var(--brand-red-light);
+    outline: none;
+}
+
+/* 5. Botón Mercado Pago */
+.btn-pay {
+    margin-top: var(--spacing-lg);
+    background-color: #009ee3;
+    /* Azul oficial Mercado Pago */
+    color: var(--brand-white);
+    padding: 18px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all var(--transition-fast);
+}
+
+.btn-pay:hover:not(:disabled) {
+    background-color: #008cc5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 158, 227, 0.3);
+}
+
+.btn-pay:disabled {
+    background-color: var(--brand-gray);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* 6. Ajustes Responsive */
+@media (max-width: 650px) {
+    #checkout-page-form {
+        grid-template-columns: 1fr;
+        /* Una sola columna en móviles */
+    }
+
+    .form-group:nth-child(5),
+    .form-group:nth-child(6),
+    .btn-pay {
+        grid-column: span 1;
+    }
+
+    .checkout-page {
+        margin: var(--spacing-md);
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+    }
+
+    .checkout-page h1 {
+        font-size: 1.6rem;
+    }
+}

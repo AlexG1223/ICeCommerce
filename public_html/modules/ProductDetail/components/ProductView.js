@@ -3,6 +3,15 @@
 export function ProductViewHTML(product) {
     const priceStr = formatCurrency(product.price);
     
+    let thumbnailsHTML = '';
+    if (product.images && product.images.length > 0) {
+        thumbnailsHTML = `
+            <div class="detail-thumbnails">
+                ${product.images.map(img => `<img src="${img.url}" class="detail-thumb" data-url="${img.url}" alt="${product.name}">`).join('')}
+            </div>
+        `;
+    }
+    
     return `
     <div>
         <a href="index.php" class="back-link">
@@ -14,7 +23,8 @@ export function ProductViewHTML(product) {
         </a>
         <div class="product-detail-view">
             <div class="detail-image-box">
-                <img src="${product.image}" alt="${product.name}">
+                <img src="${product.image}" id="main-product-image" alt="${product.name}">
+                ${thumbnailsHTML}
             </div>
             
             <div class="detail-info-box">

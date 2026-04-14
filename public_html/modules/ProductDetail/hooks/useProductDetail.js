@@ -7,10 +7,21 @@ export async function useProductDetail(container, productId) {
     try {
         const response = await fetch(`${CONFIG.API_URL}/products.php?action=detail&id=${productId}`);
         const data = await response.json();
+        console.log("Fetch Product Detail Data Received:", data);
 
         if (data.success && data.data) {
             const product = data.data;
             container.innerHTML = ProductViewHTML(product);
+
+            // Bind thumbnails logic
+            const thumbnails = container.querySelectorAll('.detail-thumb');
+            const mainImg = document.getElementById('main-product-image');
+            
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', (e) => {
+                    mainImg.src = e.target.dataset.url;
+                });
+            });
 
             // Bind events
             const btnAdd = document.getElementById('btn-detail-add');
