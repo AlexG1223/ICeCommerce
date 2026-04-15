@@ -57,8 +57,9 @@ CREATE TABLE `orders` (
   `notes` text DEFAULT NULL,
   `total` decimal(10,2) NOT NULL,
   `payment_method` enum('mercadopago','manual') NOT NULL,
-  `payment_status` enum('pending','paid','failed') DEFAULT 'pending',
+  `payment_status` enum('pending','paid','failed','approved','rejected','cancelled','refunded','in_process','completed') DEFAULT 'pending',
   `preference_id` varchar(255) DEFAULT NULL,
+  `shipping_agency` varchar(100) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

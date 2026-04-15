@@ -12,6 +12,7 @@ class MailerService {
     private $mail;
 
     public function __construct() {
+        error_log('[MailerService] Inicializando PHPMailer...');
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
         $this->mail->Host       = 'mail.impresoscarnelli.com'; // Adjust if using a different SMTP host like smtp.gmail.com etc. Wait, the username is ventas@impresoscarnelli.com. Often it's either mail.impresoscarnelli.com or smtp.impresoscarnelli.com
@@ -25,9 +26,14 @@ class MailerService {
         
         $this->mail->setFrom('ventas@impresoscarnelli.com', 'Impresos Carnelli Ventas');
         $this->mail->CharSet = 'UTF-8';
+        error_log('[MailerService] ✅ PHPMailer configurado - Host: ' . $this->mail->Host . ' | Puerto: ' . $this->mail->Port);
     }
 
     public function sendPurchaseNotification($orderData, $orderItems, $targetEmail = 'agcarnelli2023@gmail.com') {
+        error_log('[MailerService::sendPurchaseNotification] ========== Enviando notificación de compra ==========');
+        error_log('[MailerService::sendPurchaseNotification] Orden #' . $orderData['id'] . ' | Destino: ' . $targetEmail);
+        error_log('[MailerService::sendPurchaseNotification] Cliente: ' . $orderData['customer_name'] . ' | Total: ' . $orderData['total']);
+        error_log('[MailerService::sendPurchaseNotification] Items en la orden: ' . count($orderItems));
         try {
             $this->mail->addAddress($targetEmail);
 
@@ -65,9 +71,12 @@ class MailerService {
 
             $this->mail->Body = $html;
 
-            return $this->mail->send();
+            $result = $this->mail->send();
+            error_log('[MailerService::sendPurchaseNotification] ✅ Email enviado exitosamente');
+            return $result;
         } catch (Exception $e) {
-            error_log("No se pudo enviar el correo de notificación. Mailer Error: {$this->mail->ErrorInfo}");
+            error_log('[MailerService::sendPurchaseNotification] ❌ Error al enviar email: ' . $e->getMessage());
+            error_log('[MailerService::sendPurchaseNotification] ❌ Mailer Error: ' . $this->mail->ErrorInfo);
             return false;
         }
     }
