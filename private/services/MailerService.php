@@ -1,5 +1,5 @@
-<?php
 // private/services/MailerService.php
+require_once __DIR__ . '/../config/settings.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -15,16 +15,14 @@ class MailerService {
         error_log('[MailerService] Inicializando PHPMailer...');
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
-        $this->mail->Host       = 'mail.impresoscarnelli.com'; // Adjust if using a different SMTP host like smtp.gmail.com etc. Wait, the username is ventas@impresoscarnelli.com. Often it's either mail.impresoscarnelli.com or smtp.impresoscarnelli.com
-        // Let's assume generic SMTP or cPanel default: 
-        $this->mail->Host = 'mail.impresoscarnelli.com';
+        $this->mail->Host       = MAIL_HOST;
         $this->mail->SMTPAuth   = true;
-        $this->mail->Username   = 'ventas@impresoscarnelli.com';
-        $this->mail->Password   = 'Mauraska2026ImpresosCarnelli!';
-        $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // or ENCRYPTION_STARTTLS
-        $this->mail->Port       = 465; // or 587
+        $this->mail->Username   = MAIL_USER;
+        $this->mail->Password   = MAIL_PASS;
+        $this->mail->SMTPSecure = (MAIL_PORT == 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+        $this->mail->Port       = MAIL_PORT;
         
-        $this->mail->setFrom('ventas@impresoscarnelli.com', 'Impresos Carnelli Ventas');
+        $this->mail->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
         $this->mail->CharSet = 'UTF-8';
         error_log('[MailerService] ✅ PHPMailer configurado - Host: ' . $this->mail->Host . ' | Puerto: ' . $this->mail->Port);
     }

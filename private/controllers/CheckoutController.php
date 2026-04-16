@@ -1,6 +1,7 @@
 <?php
 // private/controllers/CheckoutController.php
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/settings.php';
 require_once __DIR__ . '/../models/Order.php';
 
 // Simulate Composer autoload for MP (in real scenario, we require vendor/autoload.php)
@@ -12,7 +13,6 @@ class CheckoutController
 {
     private $db;
     private $order;
-    private $mp_access_token = 'APP_USR-2016608383710992-041214-0a5f4b7332f489a8b5e658e8e7ce17eb-3331693746';
 
     public function __construct()
     {
@@ -60,7 +60,7 @@ class CheckoutController
             error_log('[CheckoutController] Verificando clase MercadoPago...');
             if (class_exists('\MercadoPago\MercadoPagoConfig')) {
                 error_log('[CheckoutController] ✅ Clase MercadoPago encontrada');
-                \MercadoPago\MercadoPagoConfig::setAccessToken($this->mp_access_token);
+                \MercadoPago\MercadoPagoConfig::setAccessToken(MP_ACCESS_TOKEN);
 
                 $client = new \MercadoPago\Client\Preference\PreferenceClient();
                 $items = [];
@@ -74,15 +74,12 @@ class CheckoutController
                     ];
                 }
 
-                $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-                $baseUrl = $protocol . '://' . $_SERVER['HTTP_HOST'] . '/eCommerce/public_html';
-
                 $preferenceData = [
                     "items" => $items,
                     "back_urls" => [
-                        "success" => $baseUrl . "/public/tienda/success.php",
-                        "failure" => $baseUrl . "/public/tienda/failure.php",
-                        "pending" => $baseUrl . "/public/tienda/pending.php"
+                        "success" => BASE_URL . "/success.php",
+                        "failure" => BASE_URL . "/failure.php",
+                        "pending" => BASE_URL . "/pending.php"
                     ],
                     "auto_return" => "approved",
                     "external_reference" => (string) $orderId

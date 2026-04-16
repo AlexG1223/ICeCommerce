@@ -1,15 +1,12 @@
 <?php
 // private/controllers/WebhookController.php
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/settings.php';
 require_once __DIR__ . '/../models/Order.php';
-require_once __DIR__ . '/../models/Order.php';
+require_once __DIR__ . '/../services/MailerService.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-if(file_exists(__DIR__ . '/../../vendor/autoload.php')) {
-    require_once __DIR__ . '/../../vendor/autoload.php';
-}
 
 class WebhookController {
     private $db;
@@ -32,10 +29,13 @@ class WebhookController {
             error_log('[WebhookController] 💳 Payment ID: ' . $payment_id);
             
             try {
-                if(class_exists('\MercadoPago\SDK')) {
+                if(class_exists('\MercadoPago\MercadoPagoConfig')) {
                     error_log('[WebhookController] ✅ SDK MercadoPago disponible');
-                    \MercadoPago\SDK::setAccessToken('APP_USR-2016608383710992-041214-0a5f4b7332f489a8b5e658e8e7ce17eb-3331693746');
-                    $payment = \MercadoPago\Payment::find_by_id($payment_id);
+                    \MercadoPago\MercadoPagoConfig::setAccessToken(MP_ACCESS_TOKEN);
+                    
+                    // Note: In V3, we use PaymentClient
+                    $client = new \MercadoPago\Client\Payment\PaymentClient();
+                    $payment = $client->get($payment_id);
                     
                     if($payment) {
                         $status = $payment->status; // 'approved', 'rejected', 'refunded', 'cancelled', 'in_process'
@@ -85,54 +85,25 @@ class WebhookController {
 
     private function sendEmailNotification($order_id) {
         error_log('[WebhookController::sendEmail] ========== Enviando email para Orden #' . $order_id . ' ==========');
-        $query = "SELECT * FROM orders WHERE id = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([$order_id]);
-        $orderInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+        $orderData = $this->order->getOrderById($order_id);
 
-        if (!$orderInfo) {
+        if (!$orderData) {
             error_log('[WebhookController::sendEmail] ❌ Orden no encontrada en DB');
             return false;
         }
-        error_log('[WebhookController::sendEmail] ✅ Orden encontrada - Cliente: ' . $orderInfo['customer_name'] . ' | Total: ' . $orderInfo['total']);
+        
+        $orderItems = $this->order->getOrderDetailsById($order_id);
 
         // --- Fetch API Creamos OT en programa de Gestión ---
-        error_log('[WebhookController::sendEmail] Creando OT en programa de gestión...');
-        $this->createOTInManagementProgram($order_id, $orderInfo);
+        $this->createOTInManagementProgram($order_id, $orderData);
 
-        $mail = new PHPMailer(true);
-        try {
-            error_log('[WebhookController::sendEmail] Configurando PHPMailer...');
-            $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com'; // Change if using another service
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'prueba@gmail.com'; // El correo desde el que sale
-            $mail->Password   = 'XXXXXXXXX'; // CONTRASEÑA DE APLICACIÓN
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-
-            $mail->setFrom('prueba@gmail.com', 'Impresos Carnelli');
-            $mail->addAddress('agcarnelli2023@gmail.com', 'Admin');
-
-            $mail->isHTML(true);
-            $mail->Subject = 'Nuevo pedido #' . $order_id . ' en Impresos Carnelli';
-            $mail->Body    = "
-                <h3>¡Nuevo pedido aprobado desde Mercado Pago!</h3>
-                <p><strong>Pedido ID:</strong> {$order_id}</p>
-                <p><strong>Cliente:</strong> {$orderInfo['customer_name']}</p>
-                <p><strong>Teléfono:</strong> {$orderInfo['customer_phone']}</p>
-                <p><strong>Email:</strong> {$orderInfo['customer_email']}</p>
-                <p><strong>Agencia de envío:</strong> {$orderInfo['shipping_agency']}</p>
-                <p><strong>Dirección:</strong> {$orderInfo['customer_address']}</p>
-                <p><strong>Total:</strong> $" . number_format($orderInfo['total'], 2) . "</p>
-                <p><strong>Notas:</strong> {$orderInfo['notes']}</p>
-            ";
-
-            $mail->send();
-            error_log('[WebhookController::sendEmail] ✅ Email enviado correctamente');
-        } catch (Exception $e) {
-            error_log('[WebhookController::sendEmail] ❌ Error al enviar email: ' . $e->getMessage());
-            error_log('[WebhookController::sendEmail] ❌ Mailer Error: ' . $mail->ErrorInfo);
+        $mailer = new MailerService();
+        $result = $mailer->sendPurchaseNotification($orderData, $orderItems, MAIL_ADMIN_NOTIFICATIONS);
+        
+        if ($result) {
+            error_log('[WebhookController::sendEmail] ✅ Email enviado correctamente vía MailerService');
+        } else {
+            error_log('[WebhookController::sendEmail] ❌ Error al enviar email');
         }
     }
 

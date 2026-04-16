@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Compra - Impresos Carnelli</title>
-    <link rel="stylesheet" href="/public/tienda/globals/main.css">
-    <link rel="stylesheet" href="/public/tienda/styles/checkout.css">
-    <link rel="stylesheet" href="/public/tienda/modules/Cart/styles/cart.css">
+    <link rel="stylesheet" href="globals/main.css">
+    <link rel="stylesheet" href="styles/checkout.css">
+    <link rel="stylesheet" href="modules/Cart/styles/cart.css">
 
 </head>
 
@@ -76,7 +76,7 @@
     </div>
 
     <!-- Required Scripts -->
-
+    <script src="globals/main.js"></script>
     <script src="modules/Cart/services/cartService.js" type="module"></script>
     <script type="module">
         import { CartService } from './modules/Cart/services/cartService.js';

@@ -1,9 +1,10 @@
 const getBaseUrl = () => {
-    const isLocal = window.location.hostname === 'localhost';
-    // Si estás en producción usa la ruta de la tienda, si no, la de localhost
-    return isLocal 
-        ? '/eCommerce/public_html/api' 
-        : '/public/tienda/api'; 
+    // Obtenemos la ruta base quitando el nombre del archivo si es necesario
+    const path = window.location.pathname;
+    const directory = path.substring(0, path.lastIndexOf('/'));
+    
+    // Si estamos en la raíz o en una página directa, la API suele estar en ./api
+    return './api'; 
 };
 
 const CONFIG = {

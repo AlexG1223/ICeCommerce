@@ -4,6 +4,7 @@ error_log('[SUCCESS] ========== Página de éxito cargada ==========');
 error_log('[SUCCESS] Query params: ' . json_encode($_GET));
 
 require_once __DIR__ . '/../private/config/database.php';
+require_once __DIR__ . '/../private/config/settings.php';
 require_once __DIR__ . '/../private/models/Order.php';
 require_once __DIR__ . '/../private/services/MailerService.php';
 
@@ -37,12 +38,12 @@ if ($orderId && $status === 'approved') {
         
         error_log('[SUCCESS] 📧 Enviando email de notificación...');
         $mailer = new MailerService();
-        $emailResult = $mailer->sendPurchaseNotification($orderData, $orderItems, 'agcarnelli2023@gmail.com');
+        $emailResult = $mailer->sendPurchaseNotification($orderData, $orderItems, MAIL_ADMIN_NOTIFICATIONS);
         error_log('[SUCCESS] Email resultado: ' . ($emailResult ? '✅ Enviado' : '❌ Falló'));
         
         // --- Fetch API Creamos OT en programa de Gestión ---
         error_log('[SUCCESS] 🔧 Creando OT en programa de gestión...');
-        $apiUrl = 'https://api.tuprogramadegestion.com/ots';
+        $apiUrl = MANAGEMENT_API_URL;
         $otData = [
             'order_id' => $orderId,
             'customer' => $orderData['customer_name'],

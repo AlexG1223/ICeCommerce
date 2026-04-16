@@ -13,11 +13,12 @@ export const CartService = {
                 cart: cartItems
             };
             console.log('[CartService] 📤 Request body armado:', JSON.stringify(requestData));
-            console.log('[CartService] 🌐 Enviando POST a /public/tienda/api/checkout.php...');
+            const apiUrl = (window.CONFIG && window.CONFIG.API_URL) ? window.CONFIG.API_URL : './api';
+            console.log(`[CartService] 🌐 Enviando POST a ${apiUrl}/checkout.php...`);
             
             const startTime = performance.now();
             
-            const response = await fetch(`/public/tienda/api/checkout.php`, {
+            const response = await fetch(`${apiUrl}/checkout.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
