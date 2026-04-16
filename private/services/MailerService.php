@@ -1,3 +1,4 @@
+<?php
 // private/services/MailerService.php
 require_once __DIR__ . '/../config/settings.php';
 

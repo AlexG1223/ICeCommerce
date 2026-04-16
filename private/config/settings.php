@@ -20,8 +20,11 @@ define('MAIL_ADMIN_NOTIFICATIONS', 'agcarnelli2023@gmail.com');
 // Detectamos automáticamente la URL base
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'];
-// Ajustar el path si el deploy es en la raíz del dominio
-define('BASE_URL', $protocol . '://' . $host . '/eCommerce/public_html');
+$script_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+// Limpiamos los folders de la API o carpetas internas si estamos siendo llamados desde ellas
+$base_path = str_replace(['/api', '/private', '/public_html'], '', $script_path);
+$base_path = rtrim($base_path, '/');
+define('BASE_URL', $protocol . '://' . $host . $base_path);
 
 // 4. API de Gestión (OT)
 define('MANAGEMENT_API_URL', 'https://api.tuprogramadegestion.com/ots');
