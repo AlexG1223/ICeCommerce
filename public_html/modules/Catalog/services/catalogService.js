@@ -8,10 +8,8 @@ export const CatalogService = {
             
             const response = await fetch(url);
             const data = await response.json();
-            console.log("Fetch Products Data Received:", data);
             return data;
         } catch (error) {
-            console.error('Error fetching products:', error);
             return { success: false, data: [] };
         }
     },
@@ -20,10 +18,8 @@ export const CatalogService = {
         try {
             const response = await fetch(`${CONFIG.API_URL}/products.php?action=categories`);
             const data = await response.json();
-            console.log("Fetch Categories Data Received:", data);
             return data;
         } catch (error) {
-            console.error('Error fetching categories:', error);
             return { success: false, data: [] };
         }
     }

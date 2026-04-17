@@ -18,6 +18,16 @@
     <header>
         <div class="container header-content">
             <a href="index.php" class="logo">IMPRESOS CARNELLI</a>
+            <div class="header-actions">
+                <a href="https://www.impresoscarnelli.com/page/" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span class="hide-mobile">Inicio</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -82,7 +92,7 @@
         import { CartService } from './modules/Cart/services/cartService.js';
 
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('[CHECKOUT] 🟢 Página de checkout cargada');
+
 
             const savedCart = localStorage.getItem('carnelli_cart');
             let cart = [];
@@ -90,11 +100,10 @@
                 cart = JSON.parse(savedCart);
             }
 
-            console.log('[CHECKOUT] 🛒 Carrito desde localStorage:', cart);
-            console.log('[CHECKOUT] 🛒 Cantidad de items:', cart.length);
+
+
 
             if (cart.length === 0) {
-                console.warn('[CHECKOUT] ⚠️ Carrito vacío, redirigiendo a index');
                 alert("Tu carrito está vacío.");
                 window.location.href = 'index.php';
                 return;
@@ -109,13 +118,13 @@
                 itemsContainer.appendChild(div);
             });
 
-            console.log('[CHECKOUT] 💰 Total calculado:', total);
+
             document.getElementById('checkout-total').textContent = '$' + total.toFixed(2);
 
             const form = document.getElementById('checkout-page-form');
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                console.log('[CHECKOUT] 📝 Formulario enviado');
+
 
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalText = submitBtn.textContent;
@@ -125,23 +134,22 @@
                 const formData = new FormData(form);
                 const customerData = Object.fromEntries(formData.entries());
 
-                console.log('[CHECKOUT] 👤 Datos del cliente:', customerData);
-                console.log('[CHECKOUT] 🛒 Items del carrito a enviar:', cart);
-                console.log('[CHECKOUT] 🚀 Enviando a CartService.processCheckout...');
+
+
+
 
                 const response = await CartService.processCheckout(customerData, cart);
 
-                console.log('[CHECKOUT] 📦 Respuesta del servidor:', response);
+
 
                 if (response.success && response.preference_url) {
-                    console.log('[CHECKOUT] ✅ Pago OK - preference_url:', response.preference_url);
-                    console.log('[CHECKOUT] ✅ order_id:', response.order_id);
-                    console.log('[CHECKOUT] ✅ preference_id:', response.preference_id);
-                    console.log('[CHECKOUT] 🔄 Limpiando carrito y redirigiendo a Mercado Pago...');
+
+
+
+
                     localStorage.removeItem('carnelli_cart');
                     window.location.href = response.preference_url;
                 } else {
-                    console.error('[CHECKOUT] ❌ Error en respuesta:', response.message);
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
                     alert('Error: ' + response.message);

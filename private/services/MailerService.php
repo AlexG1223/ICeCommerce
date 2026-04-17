@@ -13,7 +13,6 @@ class MailerService {
     private $mail;
 
     public function __construct() {
-        error_log('[MailerService] Inicializando PHPMailer...');
         $this->mail = new PHPMailer(true);
         $this->mail->isSMTP();
         $this->mail->Host       = MAIL_HOST;
@@ -25,14 +24,9 @@ class MailerService {
         
         $this->mail->setFrom(MAIL_FROM_EMAIL, MAIL_FROM_NAME);
         $this->mail->CharSet = 'UTF-8';
-        error_log('[MailerService] ✅ PHPMailer configurado - Host: ' . $this->mail->Host . ' | Puerto: ' . $this->mail->Port);
     }
 
     public function sendPurchaseNotification($orderData, $orderItems, $targetEmail = 'agcarnelli2023@gmail.com') {
-        error_log('[MailerService::sendPurchaseNotification] ========== Enviando notificación de compra ==========');
-        error_log('[MailerService::sendPurchaseNotification] Orden #' . $orderData['id'] . ' | Destino: ' . $targetEmail);
-        error_log('[MailerService::sendPurchaseNotification] Cliente: ' . $orderData['customer_name'] . ' | Total: ' . $orderData['total']);
-        error_log('[MailerService::sendPurchaseNotification] Items en la orden: ' . count($orderItems));
         try {
             $this->mail->addAddress($targetEmail);
 
@@ -71,11 +65,8 @@ class MailerService {
             $this->mail->Body = $html;
 
             $result = $this->mail->send();
-            error_log('[MailerService::sendPurchaseNotification] ✅ Email enviado exitosamente');
             return $result;
         } catch (Exception $e) {
-            error_log('[MailerService::sendPurchaseNotification] ❌ Error al enviar email: ' . $e->getMessage());
-            error_log('[MailerService::sendPurchaseNotification] ❌ Mailer Error: ' . $this->mail->ErrorInfo);
             return false;
         }
     }

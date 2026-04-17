@@ -7,7 +7,6 @@ export async function useProductDetail(container, productId) {
     try {
         const response = await fetch(`${CONFIG.API_URL}/products.php?action=detail&id=${productId}`);
         const data = await response.json();
-        console.log("Fetch Product Detail Data Received:", data);
 
         if (data.success && data.data) {
             const product = data.data;
@@ -27,7 +26,6 @@ if (mainImg && thumbnails.length > 0) {
         });
     });
 } else {
-    console.warn("No se encontraron miniaturas o la imagen principal en el DOM.");
 }
 
             // Bind events
@@ -66,7 +64,6 @@ if (mainImg && thumbnails.length > 0) {
             `;
         }
     } catch (err) {
-        console.error("Error fetching detail:", err);
         container.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--brand-red);">Ocurrió un error.</div>';
     }
 }
