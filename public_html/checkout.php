@@ -7,18 +7,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='icon' type="image/png" href="/public/assets/img/ICLogo.jpeg">
+    <link rel='icon' type="image/png" href="/public/tienda/assets/img/iclogo.png">
     <title>Finalizar Compra - Impresos Carnelli</title>
     <link rel="stylesheet" href="globals/main.css">
     <link rel="stylesheet" href="styles/checkout.css">
     <link rel="stylesheet" href="modules/Cart/styles/cart.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 </head>
 
 <body>
     <header>
         <div class="container header-content">
-            <a href="index.php" class="logo">IMPRESOS CARNELLI</a>
+            <a href="index.php" class="logo">Impresos Carnelli</a>
             <div class="header-actions">
                 <a href="https://www.impresoscarnelli.com/page/" class="nav-link">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -85,6 +87,9 @@
             <button type="submit" class="btn-pay">Pagar con Mercado Pago</button>
         </form>
     </div>
+
+    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/whatsapp.php'; ?>
 
     <!-- Required Scripts -->
     <script src="globals/main.js"></script>

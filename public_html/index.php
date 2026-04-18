@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='icon' type="image/png" href="/public/assets/img/ICLogo.jpeg">
+    <link rel='icon' type="image/png" href="/public/tienda/assets/img/iclogo.png">
     <title>Impresos Carnelli</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Globals -->
     <link rel="stylesheet" href="globals/main.css">
@@ -23,7 +26,7 @@
 <body>
     <header>
         <div class="container header-content">
-            <a href="index.php" class="logo">IMPRESOS CARNELLI</a>
+            <a href="index.php" class="logo">Impresos Carnelli</a>
             <div class="header-actions">
                 <a href="https://www.impresoscarnelli.com/page/" class="nav-link">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -53,6 +56,9 @@
 
     <!-- Componente inyectado globalmente: Carrito Sidebar y Modal -->
     <div id="cart-root"></div>
+
+    <?php include 'includes/footer.php'; ?>
+    <?php include 'includes/whatsapp.php'; ?>
 
     <!-- Global Scripts -->
     <script src="globals/main.js"></script>
