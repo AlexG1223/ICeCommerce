@@ -3,8 +3,8 @@
 
 // 1. Configuración de Mercado Pago
 // IMPORTANTE: Pedir al cliente sus credenciales de PRODUCCIÓN
-define('MP_ACCESS_TOKEN', 'APP_USR-2016608383710992-041214-0a5f4b7332f489a8b5e658e8e7ce17eb-3331693746'); 
-define('MP_PUBLIC_KEY', ''); 
+define('MP_ACCESS_TOKEN', 'APP_USR-4411227484068291-041619-3c00c1b439f8ac4916def2b76f62c402-1557406552'); 
+define('MP_PUBLIC_KEY', 'APP_USR-013208fd-49e4-493b-bec9-fe9e89d30531'); 
 
 // 2. Configuración de Correo (SMTP)
 define('MAIL_HOST', 'mail.impresoscarnelli.com');

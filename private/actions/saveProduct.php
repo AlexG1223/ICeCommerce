@@ -73,7 +73,7 @@ function guardarProducto($db, $nombre, $descripcion, $precio, $stock, $min_cant,
 
 function procesarImagenes($db, $id_producto, $fotos)
 {
-    $directorio = __DIR__ . '/../../../public_html/img/products/';
+    $directorio = __DIR__ . '/../../public_html/img/products/';
 
     if (!file_exists($directorio)) {
         mkdir($directorio, 0777, true);
@@ -82,7 +82,7 @@ function procesarImagenes($db, $id_producto, $fotos)
     foreach ($fotos['tmp_name'] as $indice => $tmp_name) {
         $nombre_archivo = time() . "_" . $fotos['name'][$indice];
         $ruta_final = $directorio . $nombre_archivo;
-        $url_db = "assets/img/products/" . $nombre_archivo;
+        $url_db = "public_html/img/products/" . $nombre_archivo;
 
         if (move_uploaded_file($tmp_name, $ruta_final)) {
             // La primera imagen (índice 0) será la principal (is_primary = 1)
