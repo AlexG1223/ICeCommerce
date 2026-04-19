@@ -83,19 +83,32 @@ class WebhookController {
     }
 
     private function createOTInManagementProgram($order_id, $orderInfo) {
-        $api_url = 'https://api.tuprogramadegestion.com/ots';
+        $api_url = MANAGEMENT_API_URL;
+        
+        // Fetch order items to build a detail string
+        $orderItems = $this->order->getOrderDetailsById($order_id);
+        $itemStrings = [];
+        foreach ($orderItems as $item) {
+            $itemStrings[] = $item['quantity'] . "x " . $item['name'];
+        }
+        $detalle = "Pedido Web #" . $order_id . ": " . implode(", ", $itemStrings);
+
         $data = [
-            'order_id' => $order_id,
-            'customer' => $orderInfo['customer_name'],
-            'total'    => $orderInfo['total'],
-            'notes'    => $orderInfo['notes']
+            'api_token'         => MANAGEMENT_API_KEY,
+            'id_cliente'        => 1, // Default Web Client ID in ICSoftware
+            'fecha_ingreso'     => date('Y-m-d'),
+            'detalle_trabajo'   => $detalle,
+            'presupuesto'       => $orderInfo['total'],
+            'direccion_entrega' => $orderInfo['customer_address'],
+            'aclaracion_entrega'=> "Envío por: " . $orderInfo['shipping_agency'] . ". Notas: " . $orderInfo['notes'],
+            'sector_destino'    => 'DISEÑO'
         ];
 
         $options = [
             'http' => [
-                'header'  => "Content-type: application/json\r\n",
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method'  => 'POST',
-                'content' => json_encode($data)
+                'content' => http_build_query($data)
             ]
         ];
         $context  = stream_context_create($options);

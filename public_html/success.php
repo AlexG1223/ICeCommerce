@@ -39,19 +39,29 @@ if ($orderId && $status === 'approved') {
 
 
         // --- Fetch API Creamos OT en programa de Gestión ---
+        $itemStrings = [];
+        foreach ($orderItems as $item) {
+            $itemStrings[] = $item['quantity'] . "x " . $item['name'];
+        }
+        $detalle = "Pedido Web #" . $orderId . ": " . implode(", ", $itemStrings);
 
         $apiUrl = MANAGEMENT_API_URL;
         $otData = [
-            'order_id' => $orderId,
-            'customer' => $orderData['customer_name'],
-            'total' => $orderData['total']
+            'api_token'         => MANAGEMENT_API_KEY,
+            'id_cliente'        => 1, // Default Web Client ID in ICSoftware
+            'fecha_ingreso'     => date('Y-m-d'),
+            'detalle_trabajo'   => $detalle,
+            'presupuesto'       => $orderData['total'],
+            'direccion_entrega' => $orderData['customer_address'],
+            'aclaracion_entrega'=> "Envío por: " . $orderData['shipping_agency'] . ". Notas: " . $orderData['notes'],
+            'sector_destino'    => 'DISEÑO'
         ];
 
         $options = [
             'http' => [
-                'header' => "Content-type: application/json\r\n",
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',
-                'content' => json_encode($otData)
+                'content' => http_build_query($otData)
             ]
         ];
         $context = stream_context_create($options);

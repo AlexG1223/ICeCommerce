@@ -27,7 +27,9 @@ $base_path = rtrim($base_path, '/');
 define('BASE_URL', $protocol . '://' . $host . $base_path);
 
 // 4. API de Gestión (OT)
-define('MANAGEMENT_API_URL', 'https://api.tuprogramadegestion.com/ots');
+// 4. API de Gestión (OT)
+define('MANAGEMENT_API_URL', 'https://impresoscarnelli.com/public/api/ordenes_trabajo/create.php');
+define('MANAGEMENT_API_KEY', 'IC_SECRET_2026_EC');
 
 // 5. Base de Datos
 define('DB_HOST', 'localhost');
