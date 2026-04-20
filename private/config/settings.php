@@ -7,7 +7,7 @@ define('MP_ACCESS_TOKEN', 'APP_USR-4411227484068291-041619-3c00c1b439f8ac4916def
 define('MP_PUBLIC_KEY', 'APP_USR-013208fd-49e4-493b-bec9-fe9e89d30531'); 
 
 // 2. Configuración de Correo (SMTP)
-define('MAIL_HOST', 'mail.impresoscarnelli.com');
+define('MAIL_HOST', 'smtp.hostinger.com');
 define('MAIL_USER', 'ventas@impresoscarnelli.com');
 define('MAIL_PASS', 'Mauraska2026ImpresosCarnelli!');
 define('MAIL_PORT', 465);
@@ -18,13 +18,15 @@ define('MAIL_ADMIN_NOTIFICATIONS', 'agcarnelli2023@gmail.com');
 
 // 3. URLs del Sistema
 // Detectamos automáticamente la URL base
-$protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-$host = $_SERVER['HTTP_HOST'];
-$script_path = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+$script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '';
+$script_path = str_replace('\\', '/', dirname($script_name));
 // Limpiamos los folders de la API o carpetas internas si estamos siendo llamados desde ellas
 $base_path = str_replace(['/api', '/private', '/public_html'], '', $script_path);
 $base_path = rtrim($base_path, '/');
 define('BASE_URL', $protocol . '://' . $host . $base_path);
+
 
 // 4. API de Gestión (OT)
 // 4. API de Gestión (OT)

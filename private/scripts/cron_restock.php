@@ -19,6 +19,11 @@ if (php_sapi_name() !== 'cli' && !isset($_GET['token'])) {
 
 try {
     $db = (new Database())->getConnection();
+    
+    if (!$db) {
+        throw new Exception("No se pudo conectar a la base de datos.");
+    }
+
     $orderModel = new Order($db);
 
     // Definimos el tiempo de expiración (ej: 1 hora)
@@ -46,8 +51,24 @@ try {
         $count++;
     }
 
-    echo "[" . date('Y-m-d H:i:s') . "] Cron Restock: " . $count . " pedidos procesados con éxito.\n";
+    $logMessage = "[" . date('Y-m-d H:i:s') . "] Cron Restock: " . $count . " pedidos procesados con éxito.\n";
+    echo $logMessage;
+    
+    // Guardar en archivo de log
+    $logDir = __DIR__ . '/../logs';
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+    file_put_contents($logDir . '/cron.log', $logMessage, FILE_APPEND);
 
 } catch (Exception $e) {
-    echo "[" . date('Y-m-d H:i:s') . "] Error en Cron Restock: " . $e->getMessage() . "\n";
+    $errorMessage = "[" . date('Y-m-d H:i:s') . "] Error en Cron Restock: " . $e->getMessage() . "\n";
+    echo $errorMessage;
+    
+    $logDir = __DIR__ . '/../logs';
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+    file_put_contents($logDir . '/cron.log', $errorMessage, FILE_APPEND);
 }
+

@@ -64,12 +64,9 @@
                 <label for="shipping_agency">Agencia de Envío</label>
                 <select id="shipping_agency" name="shipping_agency" required>
                     <option value="">Selecciona una agencia...</option>
-                    <option value="Dac">DAC</option>
-                    <option value="Mirtrans">Mirtrans</option>
-                    <option value="Nuñez">Nuñez</option>
-                    <option value="Turil">Turil</option>
-                    <option value="Agencia Central">Agencia Central</option>
-                    <option value="Otra">Otra (Especificar en notas)</option>
+                    <option value="DAC">DAC</option>
+                    <option value="De Punta Pro Cargo">De Punta Pro Cargo</option>
+                    <option value="La Nave">La Nave</option>
                 </select>
             </div>
 
